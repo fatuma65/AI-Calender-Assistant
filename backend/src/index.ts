@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 import express, {Express} from 'express'
+// import * as express from "express";
 import  {createUser} from '../controllers/userController/createUser'
 import{ loginUser} from '../controllers/userController/login'
 import validateUser from '../utilis/validation'
@@ -12,6 +13,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.post("/api/users", validateUser, createUser);
-app.post('/login', loginUser)
+app.post('/api/login', loginUser)
+
 
 app.listen(port, () => console.log(`Server running on port ${port}`))
