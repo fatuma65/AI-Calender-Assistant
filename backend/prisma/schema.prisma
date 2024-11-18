@@ -51,11 +51,11 @@ model Event {
   description         String?
   startTime           DateTime @default(now())
   endTime             DateTime 
-  location            String
+  location            String?
   tensityLevel        TensityLevels?
   category            String?
   isRecurring         Boolean @default(false)
-  recurrencePattern   Json
+  recurrencePattern   Json?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -69,8 +69,8 @@ model Reminder {
   eventId             String
   userId              String
   reminderTime        DateTime
-  reminderMethod      ReminderMethod
-  status              ReminderStatus
+  reminderMethod      ReminderMethod?
+  status              ReminderStatus?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -82,10 +82,10 @@ model UserPreferences {
   id                          String @id @default(uuid())
   userId                      String  @unique
   date                        DateTime
-  notificationPreference      Json
+  notificationPreference      Json?
   defaultEventDuration        Int
-  colorCodingPreferences      Json
-  recurrencePatternSummary    Json
+  colorCodingPreferences      Json?
+  recurrencePatternSummary    Json?
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
 
@@ -99,7 +99,7 @@ model Analytics {
   totalEvents                 Int
   highTensityEvents           Int
   eventDurationSummary        Json
-  recurrencePatternSummary    Json
+  recurrencePatternSummary    Json?
   createdAt                   DateTime @default(now())
 
   user                        User   @relation(fields: [userId], references: [id])
@@ -109,7 +109,7 @@ model LocationData {
   id                          String @id @default(uuid())
   eventId                     String
   userId                      String
-  location                    Json
+  location                    Json?
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
 
