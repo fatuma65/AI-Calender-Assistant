@@ -2,22 +2,22 @@ import jwt, { Secret } from "jsonwebtoken";
 import * as express from "express";
 import prisma from "../src/client";
 
-interface CustomRequest extends express.Request {
-  user?: {
+export interface CustomRequest extends express.Request {
+  user: {
     id: string;
     email: string;
     iat: number;
     exp: number;
   };
-}
+} 
 
 const secretKey: Secret = process.env.SECRET_KEY || "a861582a-c445-4462-94c9";
 
 const authenticateUser = async (
-  req: CustomRequest,
+  req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) => {
+) :Promise<any> => {
   const authHeader = req.header("Authorization");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -41,12 +41,13 @@ const authenticateUser = async (
       return;
     }
 
-    req.user = {
+    (req as CustomRequest).user = {
       id: user.id,
       email: user.email,
       iat: decodedToken.iat,
       exp: decodedToken.exp,
     };
+    // req.user = user
 
     next();
   } catch (error) {
