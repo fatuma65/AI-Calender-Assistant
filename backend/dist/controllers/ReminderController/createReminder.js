@@ -12,28 +12,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = void 0;
 const client_1 = __importDefault(require("../../src/client"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstname, lastname, email, password } = req.body;
+const createReminder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
-        const newUser = yield client_1.default.user.create({
+        const { reminderTime, status, reminderMethod } = req.body;
+        const id = req.user.id;
+        const reminder = yield client_1.default.reminder.create({
             data: {
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                password: hashedPassword,
-            },
+                userId: id,
+                eventId: req.params.id,
+                reminderTime: new Date(reminderTime),
+                reminderMethod: reminderMethod,
+                status: status
+            }
         });
-        return res
-            .status(201)
-            .json({ Message: "User created successfully", data: newUser });
+        if (!reminder) {
+            console.log('You need to put on the reminder');
+            res.status(400).json({ error: 'You need a reminder' });
+        }
+        return (console.log(reminder),
+            res.status(201).json({ Message: 'Reminder created successfully' }));
     }
     catch (error) {
-        console.log(error),
-            res.status(500).json({ error: "Failed to create user" });
+        console.log('An error has occured');
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-exports.createUser = createUser;
+exports.default = createReminder;

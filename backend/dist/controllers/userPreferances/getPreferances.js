@@ -12,28 +12,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = void 0;
 const client_1 = __importDefault(require("../../src/client"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstname, lastname, email, password } = req.body;
+const getPreferance = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.user.id;
     try {
-        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
-        const newUser = yield client_1.default.user.create({
-            data: {
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                password: hashedPassword,
-            },
+        const userPreferances = yield client_1.default.userPreferences.findMany({
+            where: { userId: id },
         });
-        return res
-            .status(201)
-            .json({ Message: "User created successfully", data: newUser });
+        if (userPreferances.length === 0) {
+            res.status(404).json({ error: 'You dont have preferances yet' });
+            return;
+        }
+        else {
+            res
+                .status(200)
+                .json({
+                message: "Your Preferances retrieved successfully",
+                data: userPreferances,
+            });
+        }
     }
     catch (error) {
-        console.log(error),
-            res.status(500).json({ error: "Failed to create user" });
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
-exports.createUser = createUser;
+exports.default = getPreferance;

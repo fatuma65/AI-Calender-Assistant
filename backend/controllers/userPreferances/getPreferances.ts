@@ -8,14 +8,19 @@ const getPreferance = async (req: Request, res: Response) => {
     const userPreferances = await prisma.userPreferences.findMany({
       where: { userId: id },
     });
-
-    console.log(userPreferances);
-    res
+    if(userPreferances.length === 0) {
+      res.status(404).json({error:'You dont have preferances yet'})
+      return
+    }
+    else {
+      res
       .status(200)
       .json({
         message: "Your Preferances retrieved successfully",
         data: userPreferances,
       });
+    }
+  
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
