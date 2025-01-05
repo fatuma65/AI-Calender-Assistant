@@ -12,28 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = void 0;
 const client_1 = __importDefault(require("../../src/client"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstname, lastname, email, password } = req.body;
+const updateReminder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
-        const newUser = yield client_1.default.user.create({
-            data: {
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                password: hashedPassword,
+        const reminder = yield client_1.default.reminder.update({
+            data: req.body,
+            where: {
+                id: req.params.id,
             },
         });
-        return res
-            .status(201)
-            .json({ Message: "User created successfully", data: newUser });
+        if (!reminder) {
+            console.log("reminder not found");
+            res.status(404).json({ error: "reminder not found" });
+        }
+        return (console.log(reminder),
+            res.status(200).json({ Message: "reminder updated successfully" }));
     }
     catch (error) {
-        console.log(error),
-            res.status(500).json({ error: "Failed to create user" });
+        console.log("An error has occured");
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
-exports.createUser = createUser;
+exports.default = updateReminder;

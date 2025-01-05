@@ -12,28 +12,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = void 0;
 const client_1 = __importDefault(require("../../src/client"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstname, lastname, email, password } = req.body;
+const getEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = req.user.id;
     try {
-        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
-        const newUser = yield client_1.default.user.create({
-            data: {
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                password: hashedPassword,
+        const userEvents = yield client_1.default.event.findMany({
+            where: { userId: id },
+            include: {
+                reminders: true,
+                locationData: true,
             },
         });
-        return res
-            .status(201)
-            .json({ Message: "User created successfully", data: newUser });
+        if (!userEvents || userEvents.length === 0) {
+            console.log("Event not found");
+            res.status(404).json({ error: "Event not found" });
+            return;
+        }
+        else {
+            console.log(userEvents);
+            res
+                .status(200)
+                .json({ message: "Event retrieved successfully", data: userEvents });
+        }
     }
     catch (error) {
-        console.log(error),
-            res.status(500).json({ error: "Failed to create user" });
+        console.log(error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
-exports.createUser = createUser;
+exports.default = getEvent;
