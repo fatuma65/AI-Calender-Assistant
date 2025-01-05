@@ -13,27 +13,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 enum TensityLevels {
-  High
-  Meduim
-  Low
+  HIGH
+  MEDIUM
+  LOW
 }
 enum ReminderMethod {
-  Email
-  Push
-  Sms
+  EMAIL
+  PUSH
+  SMS
 }
 enum ReminderStatus{
-  Pending
-  Sent
-  Dismissed
+  PENDING
+  SENT
+  CANCELLED
 }
 
 model User {
   id                  String   @id @default(uuid())
-  email               String  @unique
-  firstname           String? 
-  lastname            String?
-  password            String
+  email               String  @unique @db.VarChar(100)
+  firstname           String? @db.VarChar(100)
+  lastname            String? @db.VarChar(100)
+  password            String  @db.VarChar(100)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -47,8 +47,8 @@ model User {
 model Event {
   id                  String @id @default(uuid())
   userId              String
-  title               String
-  description         String?
+  title               String  @db.VarChar(2200)
+  description         String?  @db.Text
   startTime           DateTime @default(now())
   endTime             DateTime 
   location            String?
@@ -95,10 +95,10 @@ model UserPreferences {
 model Analytics {
   id                          String @id @default(uuid())
   userId                      String
-  date                        DateTime
+  date                        DateTime @default(now())
   totalEvents                 Int
   highTensityEvents           Int
-  eventDurationSummary        Json
+  eventDurationSummary        Json?
   recurrencePatternSummary    Json?
   createdAt                   DateTime @default(now())
 

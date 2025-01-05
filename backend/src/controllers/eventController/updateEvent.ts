@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import prisma from "../../src/client";
+import prisma from "../../client";
 const updateUserEvent = async (req: Request, res: Response) => {
   try {
     const updatedEvent = await prisma.event

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import prisma from "../../src/client";
+import prisma from "../../client";
 import { Prisma } from "@prisma/client";
-import { CustomRequest} from '../../utilis/auth'
+import { CustomRequest} from '../../middlewares/auth'
 const createEvent = async (req:Request, res: Response) => {
   const user = (req as CustomRequest).user;
 

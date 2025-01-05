@@ -1,6 +1,6 @@
 import jwt, { Secret } from "jsonwebtoken";
 import * as express from "express";
-import prisma from "../src/client";
+import prisma from "../client";
 
 export interface CustomRequest extends express.Request {
   user: {
@@ -27,7 +27,7 @@ const authenticateUser = async (
   }
 
   try {
-    const token = authHeader.replace("Bearer ", "");
+    const token = authHeader.split(" ")[1];
     const decodedToken = jwt.verify(token, secretKey) as {
       id: string;
       email: string;
@@ -47,8 +47,6 @@ const authenticateUser = async (
       iat: decodedToken.iat,
       exp: decodedToken.exp,
     };
-    // req.user = user
-
     next();
   } catch (error) {
     console.log("Invalid token");

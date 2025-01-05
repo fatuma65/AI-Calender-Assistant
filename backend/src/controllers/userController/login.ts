@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { Request, Response, RequestHandler } from "express";
-import prisma from "../../src/client";
+import prisma from "../../client";
 import jwt, { Secret } from "jsonwebtoken";
 const secretKey: Secret = process.env.SECRET_KEY || "a861582a-c445-4462-94c9";
 export const loginUser: RequestHandler = async (
@@ -17,7 +17,7 @@ export const loginUser: RequestHandler = async (
         email: email,
       },
     });
-    if(user) {
+    if (user) {
       const passwordIsValid = await bcrypt.compare(password, user.password);
 
       if (passwordIsValid) {
@@ -42,11 +42,10 @@ export const loginUser: RequestHandler = async (
           error: "Password is wrong, Please provide the correct password",
         });
       }
-    }
-    else {
-      console.log('User not found')
-      res.status(404).json({error: 'User not found'})
-      return
+    } else {
+      console.log("User not found");
+      res.status(404).json({ error: "User not found" });
+      return;
     }
   }
 };
