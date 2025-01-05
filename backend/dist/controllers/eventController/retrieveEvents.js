@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_1 = __importDefault(require("../../src/client"));
+const client_1 = __importDefault(require("../../client"));
 const getEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.user.id;
     try {

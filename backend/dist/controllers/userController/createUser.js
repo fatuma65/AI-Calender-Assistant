@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createUser = void 0;
-const client_1 = __importDefault(require("../../src/client"));
+const client_1 = __importDefault(require("../../client"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { firstname, lastname, email, password } = req.body;

@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const client_1 = __importDefault(require("../../src/client"));
+const client_1 = __importDefault(require("../../client"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const secretKey = process.env.SECRET_KEY || "a861582a-c445-4462-94c9";
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -56,8 +56,8 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         else {
-            console.log('User not found');
-            res.status(404).json({ error: 'User not found' });
+            console.log("User not found");
+            res.status(404).json({ error: "User not found" });
             return;
         }
     }
