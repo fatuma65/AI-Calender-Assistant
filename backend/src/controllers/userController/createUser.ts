@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import prisma from "../../src/client";
+import prisma from "../../client";
 import bcrypt from "bcrypt";
 export const createUser: RequestHandler = async (req, res): Promise<any> => {
   const { firstname, lastname, email, password } = req.body;

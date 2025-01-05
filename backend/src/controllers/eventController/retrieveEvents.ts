@@ -1,6 +1,6 @@
-import prisma from "../../src/client";
-import { Request, Response } from "express";
-import { CustomRequest } from "../../utilis/auth";
+import prisma from '../../client'
+import { Request, Response } from 'express'
+import { CustomRequest } from '../../middlewares/auth'
 
 const getEvent = async (req: Request, res: Response) => {
   const id = (req as CustomRequest).user.id;

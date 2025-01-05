@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
-import prisma from "../../src/client";
-import { CustomRequest } from "../../utilis/auth";
+import prisma from "../../client";
+import { CustomRequest } from "../../middlewares/auth";
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const id = (req as CustomRequest).params.id;
