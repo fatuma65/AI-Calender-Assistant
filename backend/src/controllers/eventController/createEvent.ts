@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import prisma from "../../client";
 import { Prisma } from "@prisma/client";
 import { CustomRequest} from '../../middlewares/auth'
+
+// Create a new user event
 const createEvent = async (req:Request, res: Response) => {
   const user = (req as CustomRequest).user;
 
@@ -46,12 +48,10 @@ const createEvent = async (req:Request, res: Response) => {
         // },   
       },
     });
-    console.log(newEvent);
     res
       .status(201)
       .json({ Message: "Event created successfully", event: newEvent });
   } catch (error) {
-    console.log("Failed to create event", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
