@@ -1,9 +1,9 @@
-import getEvent from '../controllers/eventController/retrieveEvents'
 import updateUserEvent from '../controllers/eventController/updateEvent'
 import deleteEvent from '../controllers/eventController/DeleteEvent'
 import createEvent from '../controllers/eventController/createEvent'
 import authenticateUser from '../middlewares/auth'
 import { Express }  from "express";
+import getEvent from '../controllers/eventController/retrieveEvents'
 
 const route : Express = require('express').Router()
 

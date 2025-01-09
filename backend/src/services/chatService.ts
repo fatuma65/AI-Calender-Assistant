@@ -1,16 +1,19 @@
 // import { Configuration, OpenAIApi } from "openai";
 import dotenv from 'dotenv'
-
+import OpenAI from "openai";
+import { EventType } from './googleCalenderService';
 dotenv.config()
-const OpenAI = require('openai')
+// const OpenAI = require('openai')
 
+const token = process.env["GITHUB_TOKEN"]
 // // Initialize OpenAI
 
-const openAi = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+const client = new OpenAI({
+    baseURL: "https://models.inference.ai.azure.com",
+    apiKey: token
 })
 
-const analyzeEventWithAi = async (eventDetails) => {
+const analyzeEventWithAi = async (eventDetails: EventType) => {
     const prompt = `Analyse this event and suggest the best time slot considering the following:
     1. Event title: ${eventDetails.title}
     2. Event description: ${eventDetails.description}
@@ -25,11 +28,20 @@ const analyzeEventWithAi = async (eventDetails) => {
     3. Optimal duration
     `
 
+    try {
+        const response:any = await client.chat.completions.create({
+            messages: [{role: "user", content: prompt}],
+            model: "gpt-4o",
+            temperature: 1,
+            top_p: 1,
+            response_format: {type : "json_object"}
+        })
+    
+        return JSON.parse(response.choices[0].message.content)
+    } catch (error) {
+        console.log('An error occurred', error)
+    }
 
-    const completion = await openAi.chat.completions.create({
-        messages: [{role: "user", content: "prompt"}],
-        model: "gpt-3.5-turbo",
-        responseFormat: {type : "json_object"}
-    })
+}
 
-    return JSON.parse(completion.choices[0].message.content)
+export default analyzeEventWithAi
