@@ -27,6 +27,11 @@ enum ReminderStatus{
   SENT
   CANCELLED
 }
+enum Theme {
+  DARK
+  LIGHT
+  SYSTEM
+}
 
 model User {
   id                  String   @id @default(uuid())
@@ -50,7 +55,7 @@ model Event {
   title               String  @db.VarChar(2200)
   description         String?  @db.Text
   startTime           DateTime @default(now())
-  endTime             DateTime 
+  endTime             DateTime @default(now())
   location            String?
   tensityLevel        TensityLevels?
   category            String?
@@ -82,10 +87,15 @@ model UserPreferences {
   id                          String @id @default(uuid())
   userId                      String  @unique
   date                        DateTime
-  notificationPreference      Json?
-  defaultEventDuration        Int
+  notifications               Json?
+  theme                       Theme?
+  eventDuration               Int
+  timeZone                    String?
   colorCodingPreferences      Json?
   recurrencePatternSummary    Json?
+  workingHours                Json?
+  preferredMeetingTimes       Json?
+
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
 
