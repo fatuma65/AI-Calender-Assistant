@@ -16,7 +16,9 @@ exports.loginUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const client_1 = __importDefault(require("../../client"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const secretKey = process.env.SECRET_KEY || "a861582a-c445-4462-94c9";
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const secretKey = process.env.SECRET_KEY || "123456";
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -30,7 +32,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             },
         });
         if (user) {
-            const passwordIsValid = yield bcrypt_1.default.compare(password, user.password);
+            const passwordIsValid = yield bcrypt_1.default.compare(password, '1234');
             if (passwordIsValid) {
                 const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, secretKey, {
                     expiresIn: "48h",
@@ -45,7 +47,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     .status(200)
                     .json({
                     Message: "User logged in successfully",
-                    user: user,
+                    token: token,
                 });
             }
             else {

@@ -14,26 +14,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createUser = void 0;
 const client_1 = __importDefault(require("../../client"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstname, lastname, email, password } = req.body;
+const createUser = (userInfo) => __awaiter(void 0, void 0, void 0, function* () {
+    // const { firstname, lastname, email, password } = req.body;
     try {
-        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         const newUser = yield client_1.default.user.create({
             data: {
-                firstname: firstname,
-                lastname: lastname,
-                email: email,
-                password: hashedPassword,
+                email: userInfo.email || '',
+                firstname: userInfo.family_name,
+                lastname: userInfo.given_name,
+                password: "1234567",
             },
         });
-        return res
-            .status(201)
-            .json({ Message: "User created successfully", data: newUser });
+        console.log(newUser);
     }
     catch (error) {
-        console.log(error),
-            res.status(500).json({ error: "Failed to create user" });
+        // const hashedPassword = await bcrypt.hash(password, 10);
+        // const newUser = await prisma.user.create({
+        //   data: {
+        //     firstname: firstname,
+        //     lastname: lastname,
+        //     email: email,
+        //     password: hashedPassword,
+        //   },
+        // });
+        // return res
+        //   .status(201)
+        //   .json({ Message: "User created successfully", data: newUser });
+        console.log(error);
     }
+    // res.status(500).json({ error: "Failed to create user" });
 });
 exports.createUser = createUser;
