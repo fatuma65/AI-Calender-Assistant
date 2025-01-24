@@ -10,7 +10,8 @@ const auth_1 = __importDefault(require("../middlewares/auth"));
 const retrieveEvents_1 = __importDefault(require("../controllers/eventController/retrieveEvents"));
 const route = require('express').Router();
 route.post('/', auth_1.default, createEvent_1.default);
-route.get('/events', auth_1.default, retrieveEvents_1.default);
+route.get('/events', retrieveEvents_1.default);
+// route.get('/events', authenticateUser,  getEvent)
 route.delete('/events/:id', auth_1.default, DeleteEvent_1.default);
 route.put('/events/:id', auth_1.default, updateEvent_1.default);
 exports.default = route;

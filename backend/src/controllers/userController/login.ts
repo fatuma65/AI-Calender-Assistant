@@ -2,7 +2,9 @@ import bcrypt from "bcrypt";
 import { Request, Response, RequestHandler } from "express";
 import prisma from "../../client";
 import jwt, { Secret } from "jsonwebtoken";
-const secretKey: Secret = process.env.SECRET_KEY || "a861582a-c445-4462-94c9";
+import dotenv from "dotenv";
+dotenv.config()
+const secretKey: Secret = process.env.SECRET_KEY || "123456";
 export const loginUser: RequestHandler = async (
   req: Request,
   res: Response
@@ -18,7 +20,7 @@ export const loginUser: RequestHandler = async (
       },
     });
     if (user) {
-      const passwordIsValid = await bcrypt.compare(password, user.password);
+      const passwordIsValid = await bcrypt.compare(password, '1234');
 
       if (passwordIsValid) {
         const token = jwt.sign({ id: user.id, email: user.email }, secretKey, {
@@ -26,15 +28,15 @@ export const loginUser: RequestHandler = async (
         });
         console.log(token);
         res
-          .cookie("authToken", token, {
-            httpOnly: true,
-            maxAge: 48 * 60 * 60 * 1000,
-            // secure: process.env.NODE_ENV === "production",
-          })
+          // .cookie("authToken", token, {
+          //   httpOnly: true,
+          //   maxAge: 48 * 60 * 60 * 1000,
+          //   // secure: process.env.NODE_ENV === "production",
+          // })
           .status(200)
           .json({
             Message: "User logged in successfully",
-            user: user,
+            token: token,
           });
       } else {
         console.log("Password is wrong, Please provide the correct password");

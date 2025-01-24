@@ -32,13 +32,21 @@ enum Theme {
   LIGHT
   SYSTEM
 }
+enum Category {
+  WORK
+  PERSONAL
+  SCHOOL
+  BUSINESS
+  CHURCH
+}
 
 model User {
   id                  String   @id @default(uuid())
-  email               String  @unique @db.VarChar(100)
+  email               String?  @unique @db.VarChar(100)
   firstname           String? @db.VarChar(100)
   lastname            String? @db.VarChar(100)
-  password            String  @db.VarChar(100)
+  password            String?  @db.VarChar(100)
+  googleAccessToken   String? 
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -58,7 +66,7 @@ model Event {
   endTime             DateTime @default(now())
   location            String?
   tensityLevel        TensityLevels?
-  category            String?
+  category            Category?
   isRecurring         Boolean @default(false)
   recurrencePattern   Json?
   createdAt           DateTime @default(now())
