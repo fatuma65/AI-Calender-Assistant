@@ -17,7 +17,7 @@ This is a Node.js based application that helps users manage their events and sce
 - Framework: Express
 - Database: PostgreSQL with Prisma ORM
 - Scheduler: Node-Cron
-- Notefications: Nodemailer for email notifications
+- Notifications: Nodemailer for email notifications
 
 ### FrontEnd :-
 - React (To be implemented in the future)
@@ -26,7 +26,7 @@ This is a Node.js based application that helps users manage their events and sce
 
 ### Prerequisities
 - Node.js (v16 or later)
-- PostgreSQL
+- PostgreSQL 16
 - Yarn or npm
 - Prisma CLI 
 
@@ -48,9 +48,11 @@ yarn install
 3. Create a .env file in your root directory and ass the following environment variables.
 ```
 DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database>
-EMAIL_SERVICE=your-email-service
-EMAIL_USER=your-email-address
-EMAIL_PASS=your-email-password
+GOOGLE_API_KEY=<your-google-api-key>
+GOOGLE_CLIENT_ID=<your-google-client-id>
+GOOGLE_CLIENT_SECRET=<your-google-client-secret>
+REDIRECT_URL=<your-redirect-url>
+GITHUB_TOKEN=<your-github-openai-gpt-4o-key>
 ```
 
 4. Set up the database
@@ -78,22 +80,22 @@ yarn run dev
 </thead>
 <tbody>
 <tr>
-<td>/events</td>
+<td>api/events</td>
 <td>POST</td>
 <td>Create a new event</td>
 </tr>
 <tr>
-<td>/events/:id</td>
+<td>api/events/:id</td>
 <td>GET</td>
 <td>Retrieve event details</td>
 </tr>
 <tr>
-<td>/events/:id</td>
+<td>api/events/:id</td>
 <td>PUT</td>
 <td>Update an existing event</td>
 </tr>
 <tr>
-<td>/events/:id</td>
+<td>api/events/:id</td>
 <td>DELETE</td>
 <td>Delete an event</td>
 </tr>
@@ -143,7 +145,6 @@ npx prisma migrate dev
 
 ## Future Features
 
-- Google Calender API Intergration
 - Push notification for reminders
 - SMS notifications using Twillo
 - Advanced scheduling with time intensity
