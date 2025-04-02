@@ -14,10 +14,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api", userRoutes);
-app.use("/api", eventRoutes);
+app.use("/event", eventRoutes);
 app.get("/auth/redirect", createUser);
-
-
 
 // app.get('/auth/redirect', async (req, res) => {
 //     const code = req.query.code as string

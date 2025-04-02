@@ -1,6 +1,7 @@
 import jwt, { Secret } from "jsonwebtoken";
 import * as express from "express";
 import prisma from "../client";
+import getUserInfo from "../controllers/userController/getUserInfo";
 
 // create a custom type that adds/inherits the Reuest type from express and adds the user property.
 export interface CustomRequest extends express.Request {
@@ -36,12 +37,19 @@ const authenticateUser = async (
         .status(400)
         .json({ error: "Access Denied, No token provided" });
     }
-    // verify the token 
+
+    // verify the token
     const decodedToken = jwt.verify(token, secretKey) as CustomRequest["user"];
 
     const user = await prisma.user.findUnique({
       where: { id: decodedToken.id },
     });
+
+    const userInfo = await getUserInfo(user?.googleAccessToken ?? "");
+    if (!userInfo) {
+      return res.status(403).json({ error: "Invalid token provided" });
+    }
+
     if (!user) {
       res.status(404).json({ error: "User not found" });
       return;
