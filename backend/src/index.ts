@@ -16,24 +16,4 @@ app.use(cookieParser());
 app.use("/api", userRoutes);
 app.use("/event", eventRoutes);
 app.get("/auth/redirect", createUser);
-
-// app.get('/auth/redirect', async (req, res) => {
-//     const code = req.query.code as string
-//     const {tokens} = await googleUser.getToken(code )
-//     googleUser.setCredentials(tokens)
-
-//     const outh2 = google.oauth2({
-//         auth: googleUser,
-//         version: 'v2'
-//     })
-//     const userInfo = await outh2.userinfo.get()
-//     const {email, name, given_name, family_name} = userInfo.data
-
-//     // await createUser(userInfo.data)
-
-//     res.send(`Authentication successfull, please return to the console welcome, ${name}`)
-//     res.json({email, name, given_name, family_name})
-// })
 app.listen(port, () => console.log(`Server running on port ${port}`));
-
-// export default app;
