@@ -1,15 +1,15 @@
 import updateUserEvent from '../controllers/eventController/updateEvent'
 import deleteEvent from '../controllers/eventController/DeleteEvent'
-import createEvent from '../controllers/eventController/createEvent'
 import authenticateUser from '../middlewares/auth'
 import { Express }  from "express";
 import getEvent from '../controllers/eventController/retrieveEvents'
+import { handleNaturalLanguageCommand } from '../controllers/eventController/createEvent';
 
 const route : Express = require('express').Router()
 
-route.post('/', authenticateUser, createEvent)
+route.post('/', authenticateUser, handleNaturalLanguageCommand)
 route.get('/events', authenticateUser,  getEvent)
-route.delete('/events/:id', authenticateUser, deleteEvent)
-route.put('/events/:id', authenticateUser, updateUserEvent)
+route.delete('/:id', authenticateUser, deleteEvent)
+route.put('/:id', authenticateUser, updateUserEvent)
 
 export default route
