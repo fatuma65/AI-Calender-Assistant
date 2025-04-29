@@ -22,15 +22,15 @@ interface ParsedEvent {
 }
 
 export async function parseNaturalLanguageCommand(input: string): Promise<{
-  action: "create" | "update" | "delete" | "query";
+  action: "create" | "update" | "delete" | "get";
   eventDetails?: ParsedEvent;
   queryParams?: any;
 }> {
   try {
     const prompt = `
         Analyze the following calendar command and determine the intended action.
-        Possible actions are: create, update, delete, or query.
-        Also come up with the title and description of the user event when creating.
+        Possible actions are: create, update, delete, or get.
+        Also come up with the title and description of the user event when creating according to the action requested.
         Format the response as a JSON object with these fields:
         - title: the event title
         - description: any additional details about the event
@@ -41,6 +41,7 @@ export async function parseNaturalLanguageCommand(input: string): Promise<{
         - category: WORK, PERSONAL, SCHOOL, BUSINESS, or CHURCH
         Those are the details required in the database
         Inform the user if you are able to create this event in their calendar
+        if you are to get events, inform the user you are able to get their events
 
         User command: "${input}"
 
@@ -48,13 +49,13 @@ export async function parseNaturalLanguageCommand(input: string): Promise<{
 
         Response format:
         {
-            "action": "create|update|delete|query",
+            "action": "create|update|delete|get",
             "eventDetails": {event details if applicable},
             "queryParams": {search parameters if applicable}
         }`;
 
     const completion = await openai.chat.completions.create({
-      temperature: 0.1, // Lower temperature for more consistent outputs
+      temperature: 0.1, 
       model: "gpt-4o",
       response_format: { type: "json_object" },
       messages: [
