@@ -3,6 +3,8 @@ import prisma from "../../client";
 import { CustomRequest } from "../../middlewares/auth";
 import { $Enums } from "@prisma/client";
 import { JsonValue } from "@prisma/client/runtime/library";
+import calendar from '../../services/googleCalendar';
+import { googleUser } from '../../services/googleCalendar';
 import {
   checkCalendarAvailability,
   scheduleEvent,
@@ -32,9 +34,12 @@ export interface EventType {
 export const handleNaturalLanguageCommand = async (
   req: Request,
   res: Response
-): Promise<void> => {
+): Promise<any> => {
   try {
-    const user = (req as CustomRequest).user.id;
+    const user = (req as CustomRequest).user;
+    if (!user || !user.googleAccessToken ) {
+      return res.status(401).json({error: 'User not authenticated'})
+    }
     const { command } = req.body;
 
     // Parse the natural language command
@@ -61,14 +66,12 @@ export const handleNaturalLanguageCommand = async (
           // Create new event
           const newEvent = await prisma.event.create({
             data: {
-              userId: user,
+              userId: user.id,
               ...parsedCommand.eventDetails,
             },
           });
           console.log("New event to be created by the AI=======", newEvent);
 
-          // Schedule reminders and add to Google Calendar
-          // await scheduleReminders(newEvent.id);
           await scheduleEvent(newEvent);
 
           result = {
@@ -87,7 +90,7 @@ export const handleNaturalLanguageCommand = async (
         // Find the most relevant event to update
         const eventToUpdate = await prisma.event.findFirst({
           where: {
-            userId: user,
+            userId: user.id,
             title: {
               contains: parsedCommand.eventDetails.title,
               mode: "insensitive",
@@ -118,7 +121,7 @@ export const handleNaturalLanguageCommand = async (
         // Find events matching the query
         const eventsToDelete = await prisma.event.findMany({
           where: {
-            userId: user,
+            userId: user.id,
             title: {
               contains: parsedCommand.queryParams?.title || "",
               mode: "insensitive",
@@ -144,35 +147,53 @@ export const handleNaturalLanguageCommand = async (
         };
         break;
 
-      case "query":
+      case "get":
         // Search for events based on query parameters
-        const events = await prisma.event.findMany({
-          where: {
-            userId: user,
-            OR: [
-              {
-                title: {
-                  contains: parsedCommand.queryParams?.title || "",
-                  mode: "insensitive",
-                },
-              },
-              {
-                description: {
-                  contains: parsedCommand.queryParams?.description || "",
-                  mode: "insensitive",
-                },
-              },
-            ],
-          },
-          orderBy: {
-            startTime: "asc",
-          },
-        });
+        googleUser.setCredentials({access_token: user.googleAccessToken})
 
-        result = {
-          message: `Found ${events.length} events`,
-          events,
-        };
+        const response = calendar.events.list({
+              calendarId: 'primary',
+              timeMin: new Date().toISOString(),
+              maxResults: 10,
+              singleEvents: true,
+              orderBy: 'startTime'
+        })
+        
+            const events = (await response).data.items
+            console.log(events?.length)
+        
+            if(!events || events.length === 0) {
+              return res.status(404).json({message: 'No upcoming events found'})
+            }
+
+            result = {
+              message: `Events retrieved successfully, Found ${events.length} events`,
+              events,
+            };
+        
+            // res.status(200).json({message: 'Events retrieved successfully', data: events})
+        // const events = await prisma.event.findMany({
+        //   where: {
+        //     userId: user.id,
+        //     OR: [
+        //       {
+        //         title: {
+        //           contains: parsedCommand.queryParams?.title || "",
+        //           mode: "insensitive",
+        //         },
+        //       },
+        //       {
+        //         description: {
+        //           contains: parsedCommand.queryParams?.description || "",
+        //           mode: "insensitive",
+        //         },
+        //       },
+        //     ],
+        //   },
+        //   orderBy: {
+        //     startTime: "asc",
+        //   },
+        // });
         break;
 
       default:
