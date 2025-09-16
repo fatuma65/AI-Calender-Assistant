@@ -10,6 +10,7 @@ import {
   scheduleEvent,
 } from "../../services/googleCalendar";
 import { parseNaturalLanguageCommand } from "../../services/chatService";
+import { listAllGmailMessages } from "../../services/gmailService";
 
 // import { scheduleReminders } from "../../services/reminderService";
 
@@ -166,9 +167,11 @@ export const handleNaturalLanguageCommand = async (
               return res.status(404).json({message: 'No upcoming events found'})
             }
 
+            const assistantResponse = parsedCommand.queryParams?.message
             result = {
+              assistantResponse: assistantResponse,
               message: `Events retrieved successfully, Found ${events.length} events`,
-              events,
+              events: events,
             };
         
             // res.status(200).json({message: 'Events retrieved successfully', data: events})
@@ -207,5 +210,5 @@ export const handleNaturalLanguageCommand = async (
       error:
         error instanceof Error ? error.message : "Failed to process command",
     });
-  }
+  } 
 };
